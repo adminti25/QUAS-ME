@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnGoogleWallet = document.getElementById("btnGoogleWallet");
   const btnAppleWallet = document.getElementById("btnAppleWallet");
 
-  // FLIP TARJETA
+  // ==================== FLIP TARJETA ====================
   if (flipArrow) {
     flipArrow.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // CHECKBOX
+  // ==================== CHECKBOX ====================
   acceptCheckbox.addEventListener("change", () => {
     if (acceptCheckbox.checked) {
       btnContinuar.classList.add("enabled");
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // MOSTRAR BOTONES WALLET (Siempre visibles)
+  // ==================== BOTONES WALLET - ACCIONES ====================
   function mostrarBotonesWallet() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                   (navigator.platform === 'MacIntel' && 'ontouchend' in document);
@@ -50,33 +50,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  mostrarBotonesWallet();   // Se muestran desde el inicio
+  // Mostrar botones desde el inicio
+  mostrarBotonesWallet();
 
-  // CONTINUAR
+  // Acción al hacer clic en Google Wallet
+  if (btnGoogleWallet) {
+    btnGoogleWallet.addEventListener("click", () => {
+      alert("🔄 Función Google Wallet en desarrollo.\n\nEn la versión final se agregará el pase real.");
+      // Aquí iría el código real para Google Wallet API
+    });
+  }
+
+  // Acción al hacer clic en Apple Wallet
+  if (btnAppleWallet) {
+    btnAppleWallet.addEventListener("click", () => {
+      alert("🍎 Función Apple Wallet en desarrollo.\n\nEn la versión final se descargará el archivo .pkpass.");
+      // Aquí iría la descarga del archivo .pkpass
+    });
+  }
+
+  // ==================== BOTÓN CONTINUAR ====================
   btnContinuar.addEventListener("click", async (e) => {
     e.preventDefault();
-    // ... (tu lógica de envío actual) ...
-    alert("Registro guardado correctamente!");
+
+    const empresa = document.getElementById("empresa").value.trim();
+    const empleado = document.getElementById("empleado").value.trim();
+    const telefono = document.getElementById("telefono").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+
+    if (!empresa || !empleado || !telefono || !correo) {
+      alert("Por favor completa todos los campos.");
+      return;
+    }
+
+    alert("¡Registro guardado correctamente!");
+    // Aquí puedes mantener tu fetch al backend si lo deseas
   });
 
-  // MODAL (mantener tu código actual)
-  const modal = document.getElementById("termsModal");
-  const modalBody = document.getElementById("modal-body");
-  const modalDownloadContainer = document.getElementById("modal-download-container");
-  const btnDescargarDesdeModal = document.getElementById("btnDescargarDesdeModal");
+  // ==================== MODAL (mínimo) ====================
   const closeModal = document.querySelector(".close-modal");
-
-  document.querySelectorAll("#openTerms, #openPrivacy, #footerTerms, #footerPrivacy").forEach(link => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      modalBody.innerHTML = '<iframe src="aviso.html" width="100%" height="520px" style="border:none;"></iframe>';
-      modalDownloadContainer.style.display = "none";
-      modal.style.display = "block";
+  if (closeModal) {
+    closeModal.addEventListener("click", () => {
+      document.getElementById("termsModal").style.display = "none";
     });
-  });
-
-  closeModal.addEventListener("click", () => modal.style.display = "none");
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) modal.style.display = "none";
-  });
+  }
 });
