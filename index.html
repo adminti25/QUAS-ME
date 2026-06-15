@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Membresía Empresarial HSAI Chapultepec | DSAI Grupo Hospitalario Dalinde San Ángel Inn</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-logo-banner">
+  <img src="logodsai.jpg" alt="DSA Logo" class="top-logo">
+</div>
+
+<main class="main-content">
+  <div class="scene-container">
+    <div class="scene">
+      <div class="card" id="card">
+        <div class="card-inner">
+          
+          <!-- FRONT -->
+          <div class="card-front" id="cardFront">
+            <div class="logo-header">
+              <h1 class="card-title">Membresía<br>Empresarial</h1>
+            </div>
+            
+            <div class="form-section-card">
+              <div class="field full">
+                <label>Nombre de la Empresa</label>
+                <input type="text" 
+                       class="input-glass" 
+                       id="empresa" 
+                       list="empresasList"
+                       placeholder="Escribe o selecciona la empresa" 
+                       required>
+              </div>
+              
+              <div class="fields-row">
+                <div class="field">
+                  <label>Nombre Completo</label>
+                  <input type="text" class="input-glass" id="empleado" placeholder="Nombre completo" required>
+                </div>
+                <div class="field">
+                  <label>Número de Teléfono</label>
+                  <input type="tel" class="input-glass" id="telefono" placeholder="5512345678" required>
+                </div>
+              </div>
+              
+              <div class="field full">
+                <label>Correo corporativo</label>
+                <input type="email" class="input-glass" id="correo" placeholder="correo@empresa.com" required>
+              </div>
+              
+              <div class="accept-terms">
+                <input type="checkbox" id="acceptTerms">
+                <label for="acceptTerms">
+                  Acepto <a href="#" id="openTerms">términos y condiciones</a> y <a href="#" id="openPrivacy">aviso de privacidad</a>
+                </label>
+              </div>
+              
+              <button id="btnContinuar" class="btn-continuar" disabled>Continuar</button>
+              
+              <!-- BOTONES WALLET -->
+              <div id="wallet-buttons" style="margin-top: 15px; display: none; flex-direction: column; gap: 12px; align-items: center;">
+                <button id="btnGoogleWallet" class="btn-wallet" style="background: none; border: none; padding: 0;">
+                  <img src="https://developers.google.com/wallet/images/add-to-wallet-button.png" alt="Agregar a Google Wallet" style="height: 48px; width: auto;">
+                </button>
+                
+                <button id="btnAppleWallet" class="btn-wallet" style="background: none; border: none; padding: 0;">
+                  <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Agregar a Apple Wallet" style="height: 48px; width: auto;">
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- BACK -->
+          <div class="card-back" id="cardBack">
+            <div class="back-content">
+              <h2 class="back-title">Beneficios</h2>
+              <table class="benefits-table">
+                <thead><tr><th>Concepto</th><th>Beneficio</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Consultas Externas</strong></td><td></td></tr>
+                  <tr><td>1 Consulta de medicina general sin costo (Semestral)</td><td class="check">✓</td></tr>
+                  <tr><td>Consultas de ginecología Precio Preferencial</td><td>$ 423.13</td></tr>
+                  <tr><td>Consultas de pediatría Precio Preferencial</td><td>$ 423.13</td></tr>
+                  <tr class="section-title"><td colspan="2"><strong>Estudios Externos</strong></td></tr>
+                  <tr><td>Estudios de laboratorio (no incluye patología)</td><td>30%</td></tr>
+                  <tr><td>Estudios de Rayos X</td><td>30%</td></tr>
+                  <tr><td>Ultrasonido</td><td>30%</td></tr>
+                  <tr><td>Tomografía sin contraste</td><td>60%</td></tr>
+                  <tr><td>Resonancia Magnética sin contraste</td><td>60%</td></tr>
+                  <tr class="section-title"><td colspan="2"><strong>Hospitalización</strong></td></tr>
+                  <tr><td>Descuento en Hospitalización</td><td>20%</td></tr>
+                  <tr><td>Descuento en Urgencias</td><td>20%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button id="flip-arrow" class="flip-arrow">→</button>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-text">
+      <h1>"SOLO SE ACEPTA EN"</h1>
+      <h3>Hospital San Ángel Inn Chapultepec</h3>
+      <p>Avenida Chapultepec #489, CDMX</p>
+      <p><i class="fas fa-phone-alt"></i> 55 7731 1883</p>
+      <p class="copyright">© 2026 DSAI® Grupo Hospitalario Dalinde | San Ángel Inn</p>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div id="termsModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <div id="modal-body" class="modal-body-content"></div>
+    
+    <div id="modal-download-container" style="display: none; margin-top: 15px;">
+      <button id="btnDescargarDesdeModal" class="btn-aceptar">
+        <i class="fas fa-download"></i> Descargar como JPG
+      </button>
+    </div>
+  </div>
+</div>
+
+<datalist id="empresasList">
+  <option value="Seguros Monterrey / GMM"></option>
+  <option value="Universidad Londres"></option>
+  <option value="Alsea"></option>
+</datalist>
+
+<script src="script.js"></script>
+</body>
+</html>
