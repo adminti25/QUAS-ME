@@ -640,3 +640,45 @@ body {
   background: #003a8e;
   border-radius: 10px;
 }
+
+/* ====================== BOTONES WALLET SIMPLES ====================== */
+.btn-wallet-simple {
+  width: 100%;
+  max-width: 340px;
+  padding: 16px 20px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-wallet-simple.google {
+  background: #4285F4;
+  color: white;
+}
+
+.btn-wallet-simple.google:hover {
+  background: #3367D6;
+  transform: translateY(-2px);
+}
+
+.btn-wallet-simple.apple {
+  background: #000000;
+  color: white;
+}
+
+.btn-wallet-simple.apple:hover {
+  background: #1c1c1c;
+  transform: translateY(-2px);
+}
+
+.btn-wallet-simple i {
+  font-size: 1.4rem;
+}
