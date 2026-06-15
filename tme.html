@@ -18,7 +18,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 40px;
+      gap: 30px;
     }
 
     .card {
@@ -63,6 +63,18 @@
     .benefits-content { padding: 25px 25px 20px; font-size: 0.95rem; color: #003087; }
     .benefits-content table { width: 100%; border-collapse: collapse; }
     .check { color: #00c853; font-size: 1.35rem; font-weight: bold; }
+
+    /* Mensaje final */
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 420px;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
@@ -122,6 +134,13 @@
     </div>
   </div>
 
+  <!-- MENSAJE FINAL -->
+  <div class="success-message" id="successMessage" style="display: none;">
+    <h3>✅ Imágenes descargadas correctamente</h3>
+    <p>Las dos caras de tu membresía se han descargado como archivos PNG.</p>
+    <p><strong>Ahora puedes agregarlas manualmente a tu Wallet.</strong></p>
+  </div>
+
   <script>
     // Cargar datos desde URL
     function cargarDatosDesdeURL() {
@@ -135,7 +154,7 @@
 
     // Descargar automáticamente ambas tarjetas
     async function descargarAutomaticamente() {
-      await new Promise(resolve => setTimeout(resolve, 800)); // Espera a que cargue
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       // Descargar Frente
       html2canvas(document.getElementById('tarjetaFrontal'), { scale: 2 }).then(canvas => {
@@ -152,11 +171,14 @@
           link.download = 'Membresia_Reverso.png';
           link.href = canvas.toDataURL('image/png');
           link.click();
+
+          // Mostrar mensaje final
+          document.getElementById('successMessage').style.display = 'block';
         });
       }, 600);
     }
 
-    // Ejecutar al cargar
+    // Ejecutar al cargar la página
     window.addEventListener('load', () => {
       cargarDatosDesdeURL();
       descargarAutomaticamente();
