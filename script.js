@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ==================== FUNCIÓN PARA MOSTRAR BOTONES WALLET ====================
+  // ==================== MOSTRAR BOTONES WALLET SIEMPRE ====================
   function mostrarBotonesWallet() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                   (navigator.platform === 'MacIntel' && 'ontouchend' in document);
@@ -39,20 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
       walletButtons.style.display = "flex";
 
       if (isIOS) {
-        // Solo Apple Wallet en iOS
         if (btnAppleWallet) btnAppleWallet.style.display = "block";
         if (btnGoogleWallet) btnGoogleWallet.style.display = "none";
       } else if (isAndroid) {
-        // Solo Google Wallet en Android
         if (btnGoogleWallet) btnGoogleWallet.style.display = "block";
         if (btnAppleWallet) btnAppleWallet.style.display = "none";
       } else {
-        // En desktop mostrar ambos
+        // Desktop o otros
         if (btnGoogleWallet) btnGoogleWallet.style.display = "block";
         if (btnAppleWallet) btnAppleWallet.style.display = "block";
       }
     }
   }
+
+  // Mostrar los botones Wallet al cargar la página
+  mostrarBotonesWallet();
 
   // ==================== CONTINUAR + ENVIAR A FASTAPI ====================
   btnContinuar.addEventListener("click", async (e) => {
@@ -69,8 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const datosMembresia = { empresa, empleado, telefono, correo };
-
-    // ←←← ACTUALIZA ESTA URL CUANDO REINICIES NGROK ←←←
     const urlBackend = "https://frown-uneven-uptake.ngrok-free.dev/membresia/registro";
 
     try {
@@ -83,29 +82,24 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(datosMembresia)
       });
 
-      const resultado = await respuesta.json();
-
       if (respuesta.ok) {
-        console.log("Registro exitoso:", resultado);
-        alert("¡Registro guardado correctamente!\n\nAhora puedes agregar tu membresía a Wallet.");
-        mostrarBotonesWallet();   // Mostrar botones Wallet
+        alert("¡Registro guardado correctamente!");
       } else {
-        alert("Error del servidor: " + (resultado.detail || "No se pudo registrar."));
+        alert("Error al registrar.");
       }
     } catch (error) {
       console.error("Error de conexión:", error);
-      alert("Error de conexión con el servidor.\nVerifica que Ngrok esté activo.");
+      alert("Error de conexión con el servidor.");
     }
   });
 
-  // ==================== MODAL (TÉRMINOS + TARJETA) ====================
+  // ==================== MODAL ====================
   const modal = document.getElementById("termsModal");
   const modalBody = document.getElementById("modal-body");
   const modalDownloadContainer = document.getElementById("modal-download-container");
   const btnDescargarDesdeModal = document.getElementById("btnDescargarDesdeModal");
   const closeModal = document.querySelector(".close-modal");
 
-  // Abrir Aviso de Privacidad
   document.querySelectorAll("#openTerms, #openPrivacy, #footerTerms, #footerPrivacy").forEach(link => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -113,34 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
       modalDownloadContainer.style.display = "none";
       modal.style.display = "block";
     });
-  });
-
-  // Abrir Tarjeta Empresarial
-  const btnVerTarjeta = document.getElementById("btnVerTarjeta"); // Si aún lo tienes
-  if (btnVerTarjeta) {
-    btnVerTarjeta.addEventListener("click", () => {
-      const empresa = document.getElementById("empresa").value.trim() || "Nombre de la Empresa";
-      const empleado = document.getElementById("empleado").value.trim() || "Nombre del Empleado";
-
-      modalBody.innerHTML = `
-        <iframe id="tarjetaFrame" 
-                src="tme.html?empresa=${encodeURIComponent(empresa)}&empleado=${encodeURIComponent(empleado)}" 
-                width="100%" height="580px" style="border:none; border-radius:12px;">
-        </iframe>
-      `;
-      modalDownloadContainer.style.display = "block";
-      modal.style.display = "block";
-    });
-  }
-
-  // Descargar desde modal
-  btnDescargarDesdeModal.addEventListener("click", () => {
-    const iframe = document.getElementById("tarjetaFrame");
-    if (iframe && iframe.contentWindow && typeof iframe.contentWindow.descargarComoJPG === "function") {
-      iframe.contentWindow.descargarComoJPG();
-    } else {
-      alert("Espera un momento mientras carga la tarjeta...");
-    }
   });
 
   // Cerrar modal
