@@ -3,7 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const flipArrow = document.getElementById("flip-arrow");
   const acceptCheckbox = document.getElementById("acceptTerms");
   const btnContinuar = document.getElementById("btnContinuar");
-  const btnVerTarjeta = document.getElementById("btnVerTarjeta");
+
+  // Elementos Wallet
+  const walletButtons = document.getElementById("wallet-buttons");
+  const btnGoogleWallet = document.getElementById("btnGoogleWallet");
+  const btnAppleWallet = document.getElementById("btnAppleWallet");
 
   // ==================== FLIP DE LA TARJETA ====================
   if (flipArrow) {
@@ -24,6 +28,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // ==================== FUNCIÓN PARA MOSTRAR BOTONES WALLET ====================
+  function mostrarBotonesWallet() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                  (navigator.platform === 'MacIntel' && 'ontouchend' in document);
+    
+    const isAndroid = /Android/.test(navigator.userAgent);
+
+    if (walletButtons) {
+      walletButtons.style.display = "flex";
+
+      if (isIOS) {
+        // Solo Apple Wallet en iOS
+        if (btnAppleWallet) btnAppleWallet.style.display = "block";
+        if (btnGoogleWallet) btnGoogleWallet.style.display = "none";
+      } else if (isAndroid) {
+        // Solo Google Wallet en Android
+        if (btnGoogleWallet) btnGoogleWallet.style.display = "block";
+        if (btnAppleWallet) btnAppleWallet.style.display = "none";
+      } else {
+        // En desktop mostrar ambos
+        if (btnGoogleWallet) btnGoogleWallet.style.display = "block";
+        if (btnAppleWallet) btnAppleWallet.style.display = "block";
+      }
+    }
+  }
+
   // ==================== CONTINUAR + ENVIAR A FASTAPI ====================
   btnContinuar.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -33,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const telefono = document.getElementById("telefono").value.trim();
     const correo = document.getElementById("correo").value.trim();
 
-    // Validación básica
     if (!empresa || !empleado || !telefono || !correo) {
       alert("Por favor completa todos los campos.");
       return;
@@ -41,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const datosMembresia = { empresa, empleado, telefono, correo };
 
-    // ←←← ACTUALIZA ESTA URL CADA VEZ QUE REINICIES NGROK ←←←
+    // ←←← ACTUALIZA ESTA URL CUANDO REINICIES NGROK ←←←
     const urlBackend = "https://frown-uneven-uptake.ngrok-free.dev/membresia/registro";
 
     try {
@@ -58,17 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (respuesta.ok) {
         console.log("Registro exitoso:", resultado);
-        alert("¡Registro guardado correctamente!\n\nAhora puedes ver tu tarjeta.");
-        
-        // Habilitar botón de ver tarjeta
-        if (btnVerTarjeta) btnVerTarjeta.disabled = false;
+        alert("¡Registro guardado correctamente!\n\nAhora puedes agregar tu membresía a Wallet.");
+        mostrarBotonesWallet();   // Mostrar botones Wallet
       } else {
-        console.error("Error del servidor:", resultado);
         alert("Error del servidor: " + (resultado.detail || "No se pudo registrar."));
       }
     } catch (error) {
       console.error("Error de conexión:", error);
-      alert("Error de conexión con el servidor.\n\nVerifica que:\n1. Ngrok esté activo\n2. La URL sea la correcta\n3. El servidor FastAPI esté corriendo");
+      alert("Error de conexión con el servidor.\nVerifica que Ngrok esté activo.");
     }
   });
 
@@ -80,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModal = document.querySelector(".close-modal");
 
   // Abrir Aviso de Privacidad
-  document.querySelectorAll("#openTerms, #openPrivacy, #footerPrivacy, #footerTerms").forEach(link => {
+  document.querySelectorAll("#openTerms, #openPrivacy, #footerTerms, #footerPrivacy").forEach(link => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       modalBody.innerHTML = '<iframe src="aviso.html" width="100%" height="520px" style="border:none;"></iframe>';
@@ -90,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Abrir Tarjeta Empresarial
+  const btnVerTarjeta = document.getElementById("btnVerTarjeta"); // Si aún lo tienes
   if (btnVerTarjeta) {
     btnVerTarjeta.addEventListener("click", () => {
       const empresa = document.getElementById("empresa").value.trim() || "Nombre de la Empresa";
@@ -101,13 +128,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 width="100%" height="580px" style="border:none; border-radius:12px;">
         </iframe>
       `;
-
       modalDownloadContainer.style.display = "block";
       modal.style.display = "block";
     });
   }
 
-  // Descargar PNG desde modal
+  // Descargar desde modal
   btnDescargarDesdeModal.addEventListener("click", () => {
     const iframe = document.getElementById("tarjetaFrame");
     if (iframe && iframe.contentWindow && typeof iframe.contentWindow.descargarComoJPG === "function") {
@@ -123,42 +149,3 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === modal) modal.style.display = "none";
   });
 });
-
-  // ==================== DETECCIÓN DE DISPOSITIVO Y BOTONES WALLET ====================
-  function mostrarBotonesWallet() {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                  (navigator.platform === 'MacIntel' && 'ontouchend' in document);
-    const isAndroid = /Android/.test(navigator.userAgent);
-
-    const walletButtons = document.getElementById("wallet-buttons");
-    const btnGoogle = document.getElementById("btnGoogleWallet");
-    const btnApple = document.getElementById("btnAppleWallet");
-
-    if (walletButtons) {
-      walletButtons.style.display = "flex";
-
-      if (isIOS) {
-        btnApple.style.display = "block";
-        btnGoogle.style.display = "none";
-      } else if (isAndroid) {
-        btnGoogle.style.display = "block";
-        btnApple.style.display = "none";
-      } else {
-        // Desktop o desconocido: mostrar ambos
-        btnGoogle.style.display = "block";
-        btnApple.style.display = "block";
-      }
-    }
-  }
-
-  // Mostrar botones Wallet después de registro exitoso
-  btnContinuar.addEventListener("click", async (e) => {
-    // ... (tu código actual de fetch) ...
-
-    if (respuesta.ok) {
-      console.log("Registro exitoso:", resultado);
-      alert("¡Registro guardado correctamente!\n\nAhora puedes agregar tu membresía a Wallet.");
-      mostrarBotonesWallet();   // ← Muestra los botones Wallet
-    }
-    // ...
-  });
