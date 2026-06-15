@@ -682,3 +682,44 @@ body {
 .btn-wallet-simple i {
   font-size: 1.4rem;
 }
+/* ====================== BOTONES WALLET - Estilo Limpio ====================== */
+.btn-wallet-simple {
+  width: 100%;
+  max-width: 340px;
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-wallet-simple.google {
+  background: linear-gradient(135deg, #4285F4, #34A853);
+  color: white;
+}
+
+.btn-wallet-simple.google:hover {
+  background: linear-gradient(135deg, #3367D6, #2E8B3E);
+  transform: translateY(-3px);
+}
+
+.btn-wallet-simple.apple {
+  background: #000000;
+  color: white;
+}
+
+.btn-wallet-simple.apple:hover {
+  background: #1c1c1c;
+  transform: translateY(-3px);
+}
+
+.btn-wallet-simple i {
+  font-size: 1.45rem;
+}
