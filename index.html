@@ -62,16 +62,14 @@
               
               <button id="btnContinuar" class="btn-continuar" disabled>Continuar</button>
               
-              <!-- BOTONES WALLET -->
-              <div id="wallet-buttons" style="margin-top: 15px; display: none; flex-direction: column; gap: 12px; align-items: center;">
-                <button id="btnGoogleWallet" class="btn-wallet" style="background:none; border:none; padding:0; cursor:pointer;">
-                  <img src="https://developers.google.com/wallet/images/add-to-wallet-button.png" 
-                       alt="Agregar a Google Wallet" style="height: 52px; width:auto;">
+              <!-- BOTONES WALLET SIMPLES Y LEGIBLES -->
+              <div id="wallet-buttons" style="margin-top: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+                <button id="btnGoogleWallet" class="btn-wallet-simple google">
+                  <i class="fab fa-google"></i> Agregar a Google Wallet
                 </button>
                 
-                <button id="btnAppleWallet" class="btn-wallet" style="background:none; border:none; padding:0; cursor:pointer;">
-                  <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
-                       alt="Agregar a Apple Wallet" style="height: 52px; width:auto;">
+                <button id="btnAppleWallet" class="btn-wallet-simple apple">
+                  <i class="fab fa-apple"></i> Agregar a Apple Wallet
                 </button>
               </div>
             </div>
