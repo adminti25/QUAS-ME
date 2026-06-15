@@ -4,12 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const acceptCheckbox = document.getElementById("acceptTerms");
   const btnContinuar = document.getElementById("btnContinuar");
 
-  // Wallet Buttons
+  // Elementos Wallet
   const walletButtons = document.getElementById("wallet-buttons");
   const btnGoogleWallet = document.getElementById("btnGoogleWallet");
   const btnAppleWallet = document.getElementById("btnAppleWallet");
 
-  // ==================== FLIP TARJETA ====================
+  // ==================== FLIP DE LA TARJETA ====================
   if (flipArrow) {
     flipArrow.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ==================== CHECKBOX ====================
+  // ==================== CHECKBOX TÉRMINOS ====================
   acceptCheckbox.addEventListener("change", () => {
     if (acceptCheckbox.checked) {
       btnContinuar.classList.add("enabled");
@@ -28,48 +28,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ==================== BOTONES WALLET - ACCIONES ====================
-  function mostrarBotonesWallet() {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                  (navigator.platform === 'MacIntel' && 'ontouchend' in document);
-    const isAndroid = /Android/.test(navigator.userAgent);
+  // ==================== BOTONES WALLET - DESCARGAR IMÁGENES ====================
+  function descargarTarjetas() {
+    const empresa = document.getElementById("empresa").value.trim() || "Empresa";
+    const empleado = document.getElementById("empleado").value.trim() || "Empleado";
 
-    if (walletButtons) {
-      walletButtons.style.display = "flex";
-
-      if (isIOS) {
-        btnAppleWallet.style.display = "block";
-        btnGoogleWallet.style.display = "none";
-      } else if (isAndroid) {
-        btnGoogleWallet.style.display = "block";
-        btnAppleWallet.style.display = "none";
-      } else {
-        btnGoogleWallet.style.display = "block";
-        btnAppleWallet.style.display = "block";
-      }
-    }
+    // Abre tme.html para que descargue las imágenes automáticamente
+    const url = `tme.html?empresa=${encodeURIComponent(empresa)}&empleado=${encodeURIComponent(empleado)}`;
+    window.open(url, "_blank");
   }
 
-  // Mostrar botones desde el inicio
-  mostrarBotonesWallet();
-
-  // Acción al hacer clic en Google Wallet
+  // Acción Google Wallet
   if (btnGoogleWallet) {
     btnGoogleWallet.addEventListener("click", () => {
-      alert("🔄 Función Google Wallet en desarrollo.\n\nEn la versión final se agregará el pase real.");
-      // Aquí iría el código real para Google Wallet API
+      alert("📲 Descargando tarjeta para Google Wallet...\n\nSe abrirá la membresía en una nueva pestaña.");
+      descargarTarjetas();
     });
   }
 
-  // Acción al hacer clic en Apple Wallet
+  // Acción Apple Wallet
   if (btnAppleWallet) {
     btnAppleWallet.addEventListener("click", () => {
-      alert("🍎 Función Apple Wallet en desarrollo.\n\nEn la versión final se descargará el archivo .pkpass.");
-      // Aquí iría la descarga del archivo .pkpass
+      alert("📲 Descargando tarjeta para Apple Wallet...\n\nSe abrirá la membresía en una nueva pestaña.");
+      descargarTarjetas();
     });
   }
 
-  // ==================== BOTÓN CONTINUAR ====================
+  // Mostrar los botones Wallet desde el inicio
+  if (walletButtons) {
+    walletButtons.style.display = "flex";
+  }
+
+  // ==================== CONTINUAR ====================
   btnContinuar.addEventListener("click", async (e) => {
     e.preventDefault();
 
@@ -83,15 +73,31 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Aquí puedes mantener tu código de envío al backend si lo deseas
     alert("¡Registro guardado correctamente!");
-    // Aquí puedes mantener tu fetch al backend si lo deseas
   });
 
-  // ==================== MODAL (mínimo) ====================
+  // ==================== MODAL ====================
+  const modal = document.getElementById("termsModal");
+  const modalBody = document.getElementById("modal-body");
+  const modalDownloadContainer = document.getElementById("modal-download-container");
+  const btnDescargarDesdeModal = document.getElementById("btnDescargarDesdeModal");
   const closeModal = document.querySelector(".close-modal");
-  if (closeModal) {
-    closeModal.addEventListener("click", () => {
-      document.getElementById("termsModal").style.display = "none";
+
+  document.querySelectorAll("#openTerms, #openPrivacy, #footerTerms, #footerPrivacy").forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      modalBody.innerHTML = '<iframe src="aviso.html" width="100%" height="520px" style="border:none;"></iframe>';
+      modalDownloadContainer.style.display = "none";
+      modal.style.display = "block";
     });
+  });
+
+  if (closeModal) {
+    closeModal.addEventListener("click", () => modal.style.display = "none");
   }
+
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) modal.style.display = "none";
+  });
 });
