@@ -3,11 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const flipArrow = document.getElementById("flip-arrow");
   const acceptCheckbox = document.getElementById("acceptTerms");
   const btnContinuar = document.getElementById("btnContinuar");
-
-  // Elementos Wallet
-  const walletButtons = document.getElementById("wallet-buttons");
-  const btnGoogleWallet = document.getElementById("btnGoogleWallet");
-  const btnAppleWallet = document.getElementById("btnAppleWallet");
+  const btnVerTarjeta = document.getElementById("btnVerTarjeta");
 
   // ==================== FLIP DE LA TARJETA ====================
   if (flipArrow) {
@@ -28,38 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ==================== BOTONES WALLET - DESCARGAR IMÁGENES ====================
-  function descargarTarjetas() {
-    const empresa = document.getElementById("empresa").value.trim() || "Empresa";
-    const empleado = document.getElementById("empleado").value.trim() || "Empleado";
-
-    // Abre tme.html para que descargue las imágenes automáticamente
-    const url = `tme.html?empresa=${encodeURIComponent(empresa)}&empleado=${encodeURIComponent(empleado)}`;
-    window.open(url, "_blank");
-  }
-
-  // Acción Google Wallet
-  if (btnGoogleWallet) {
-    btnGoogleWallet.addEventListener("click", () => {
-      alert("📲 Descargando tarjeta para Google Wallet...\n\nSe abrirá la membresía en una nueva pestaña.");
-      descargarTarjetas();
-    });
-  }
-
-  // Acción Apple Wallet
-  if (btnAppleWallet) {
-    btnAppleWallet.addEventListener("click", () => {
-      alert("📲 Descargando tarjeta para Apple Wallet...\n\nSe abrirá la membresía en una nueva pestaña.");
-      descargarTarjetas();
-    });
-  }
-
-  // Mostrar los botones Wallet desde el inicio
-  if (walletButtons) {
-    walletButtons.style.display = "flex";
-  }
-
-  // ==================== CONTINUAR ====================
+  // ==================== CONTINUAR + ENVIAR A FASTAPI ====================
   btnContinuar.addEventListener("click", async (e) => {
     e.preventDefault();
 
@@ -73,18 +38,45 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Aquí puedes mantener tu código de envío al backend si lo deseas
-    alert("¡Registro guardado correctamente!");
+    const datosMembresia = { empresa, empleado, telefono, correo };
+
+    const urlBackend = "https://frown-uneven-uptake.ngrok-free.dev/membresia/registro";
+
+    try {
+      const respuesta = await fetch(urlBackend, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(datosMembresia)
+      });
+
+      const resultado = await respuesta.json();
+
+      if (respuesta.ok) {
+        console.log("Registro exitoso:", resultado);
+        alert("¡Registro guardado correctamente!\n\nAhora puedes ver tu tarjeta.");
+        
+        if (btnVerTarjeta) btnVerTarjeta.disabled = false;
+      } else {
+        console.error("Error del servidor:", resultado);
+        alert("Error del servidor: " + (resultado.detail || "No se pudo registrar."));
+      }
+    } catch (error) {
+      console.error("Error de conexión:", error);
+      alert("Error de conexión con el servidor.\nVerifica que Ngrok esté activo.");
+    }
   });
 
-  // ==================== MODAL ====================
+  // ==================== MODAL (TÉRMINOS + TARJETA) ====================
   const modal = document.getElementById("termsModal");
   const modalBody = document.getElementById("modal-body");
   const modalDownloadContainer = document.getElementById("modal-download-container");
   const btnDescargarDesdeModal = document.getElementById("btnDescargarDesdeModal");
   const closeModal = document.querySelector(".close-modal");
 
-  document.querySelectorAll("#openTerms, #openPrivacy, #footerTerms, #footerPrivacy").forEach(link => {
+  document.querySelectorAll("#openTerms, #openPrivacy, #footerPrivacy, #footerTerms").forEach(link => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       modalBody.innerHTML = '<iframe src="aviso.html" width="100%" height="520px" style="border:none;"></iframe>';
@@ -93,14 +85,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  if (closeModal) {
-    closeModal.addEventListener("click", () => modal.style.display = "none");
+  if (btnVerTarjeta) {
+    btnVerTarjeta.addEventListener("click", () => {
+      const empresa = document.getElementById("empresa").value.trim() || "Nombre de la Empresa";
+      const empleado = document.getElementById("empleado").value.trim() || "Nombre del Empleado";
+
+      modalBody.innerHTML = `
+        <iframe id="tarjetaFrame" 
+                src="tme.html?empresa=${encodeURIComponent(empresa)}&empleado=${encodeURIComponent(empleado)}" 
+                width="100%" height="580px" style="border:none; border-radius:12px;">
+        </iframe>
+      `;
+
+      modalDownloadContainer.style.display = "block";
+      modal.style.display = "block";
+    });
   }
 
+  btnDescargarDesdeModal.addEventListener("click", () => {
+    const iframe = document.getElementById("tarjetaFrame");
+    if (iframe && iframe.contentWindow && typeof iframe.contentWindow.descargarComoJPG === "function") {
+      iframe.contentWindow.descargarComoJPG();
+    } else {
+      alert("Espera un momento mientras carga la tarjeta...");
+    }
+  });
+
+  closeModal.addEventListener("click", () => modal.style.display = "none");
   window.addEventListener("click", (e) => {
     if (e.target === modal) modal.style.display = "none";
   });
-});
+
   // ==================== GOOGLE WALLET API ====================
   const btnGoogleWallet = document.getElementById("btnGoogleWallet");
 
@@ -110,20 +125,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function addToGoogleWallet() {
-    // Datos de ejemplo (cámbialos por los reales del usuario)
-    const passData = {
-      employeeName: document.getElementById("empleado").value.trim() || "Empleado",
-      company: document.getElementById("empresa").value.trim() || "Empresa",
-      membershipId: "MEM-" + Math.floor(Math.random() * 100000)
+  async function addToGoogleWallet() {
+    const employeeName = document.getElementById("empleado").value.trim() || "Empleado";
+    const company = document.getElementById("empresa").value.trim() || "Empresa";
+
+    const passObject = {
+      "id": `3388000000023165612.${Date.now()}`,  // ← Cambia 3388000000000000000 por tu Issuer ID real
+      "classId": `3388000000023165612.membership-class`, // ← Cambia por tu Class ID
+      "state": "active",
+      "barcode": {
+        "type": "QR_CODE",
+        "value": "MEM-" + Date.now()
+      },
+      "textModulesData": [
+        { "header": "Empleado", "body": employeeName },
+        { "header": "Empresa", "body": company }
+      ]
     };
 
-    alert(`🔄 Intentando agregar a Google Wallet...\n\nNombre: ${passData.employeeName}\nEmpresa: ${passData.company}`);
-
-    // Código real de Google Wallet (requiere backend para generar JWT)
-    // Ejemplo básico:
-    // const jwt = "TU_JWT_FIRMADO_AQUÍ";
-    // window.location.href = `https://pay.google.com/gp/v/save/${jwt}`;
+    alert(`🔄 Enviando a Google Wallet...\n\nEmpleado: ${employeeName}\nEmpresa: ${company}`);
     
-    console.log("Datos para Google Wallet:", passData);
+    console.log("Pass Object para Google Wallet:", passObject);
+    
+    // En producción aquí iría la generación del JWT usando tu archivo JSON
   }
+});
