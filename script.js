@@ -125,13 +125,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  async function addToGoogleWallet() {
+  function addToGoogleWallet() {
     const employeeName = document.getElementById("empleado").value.trim() || "Empleado";
     const company = document.getElementById("empresa").value.trim() || "Empresa";
 
     const passObject = {
-      "id": `3388000000023165612.${Date.now()}`,  // ← Cambia 3388000000000000000 por tu Issuer ID real
-      "classId": `3388000000023165612.membership-class`, // ← Cambia por tu Class ID
+      "id": `3388000000023165612.${Date.now()}`,
+      "classId": `3388000000023165612.membership-class`,
       "state": "active",
       "barcode": {
         "type": "QR_CODE",
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ]
     };
 
-    alert(`🔄 Enviando a Google Wallet...\n\nEmpleado: ${employeeName}\nEmpresa: ${company}`);
+    alert(`🔄 Preparando pase para Google Wallet...\n\nEmpleado: ${employeeName}\nEmpresa: ${company}`);
     
     console.log("Pass Object para Google Wallet:", passObject);
     
