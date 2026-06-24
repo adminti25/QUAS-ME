@@ -101,3 +101,29 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === modal) modal.style.display = "none";
   });
 });
+  // ==================== GOOGLE WALLET API ====================
+  const btnGoogleWallet = document.getElementById("btnGoogleWallet");
+
+  if (btnGoogleWallet) {
+    btnGoogleWallet.addEventListener("click", () => {
+      addToGoogleWallet();
+    });
+  }
+
+  function addToGoogleWallet() {
+    // Datos de ejemplo (cámbialos por los reales del usuario)
+    const passData = {
+      employeeName: document.getElementById("empleado").value.trim() || "Empleado",
+      company: document.getElementById("empresa").value.trim() || "Empresa",
+      membershipId: "MEM-" + Math.floor(Math.random() * 100000)
+    };
+
+    alert(`🔄 Intentando agregar a Google Wallet...\n\nNombre: ${passData.employeeName}\nEmpresa: ${passData.company}`);
+
+    // Código real de Google Wallet (requiere backend para generar JWT)
+    // Ejemplo básico:
+    // const jwt = "TU_JWT_FIRMADO_AQUÍ";
+    // window.location.href = `https://pay.google.com/gp/v/save/${jwt}`;
+    
+    console.log("Datos para Google Wallet:", passData);
+  }
