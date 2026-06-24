@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnContinuar = document.getElementById("btnContinuar");
   const btnVerTarjeta = document.getElementById("btnVerTarjeta");
 
+  // Wallet Buttons
+  const btnGoogleWallet = document.getElementById("btnGoogleWallet");
+
   // ==================== FLIP DE LA TARJETA ====================
   if (flipArrow) {
     flipArrow.addEventListener("click", (e) => {
@@ -60,16 +63,29 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (btnVerTarjeta) btnVerTarjeta.disabled = false;
       } else {
-        console.error("Error del servidor:", resultado);
         alert("Error del servidor: " + (resultado.detail || "No se pudo registrar."));
       }
     } catch (error) {
       console.error("Error de conexión:", error);
-      alert("Error de conexión con el servidor.\nVerifica que Ngrok esté activo.");
+      alert("Error de conexión con el servidor.");
     }
   });
 
-  // ==================== MODAL (TÉRMINOS + TARJETA) ====================
+  // ==================== GOOGLE WALLET ====================
+  if (btnGoogleWallet) {
+    btnGoogleWallet.addEventListener("click", () => {
+      const employeeName = document.getElementById("empleado").value.trim() || "Empleado";
+      const company = document.getElementById("empresa").value.trim() || "Empresa";
+
+      alert(`📲 Agregando a Google Wallet...\n\nEmpleado: ${employeeName}\nEmpresa: ${company}\n\n(En producción se guardará directamente)`);
+      
+      // Abre tme.html para descargar las imágenes
+      const url = `tme.html?empresa=${encodeURIComponent(company)}&empleado=${encodeURIComponent(employeeName)}`;
+      window.open(url, "_blank");
+    });
+  }
+
+  // ==================== MODAL ====================
   const modal = document.getElementById("termsModal");
   const modalBody = document.getElementById("modal-body");
   const modalDownloadContainer = document.getElementById("modal-download-container");
@@ -115,38 +131,4 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("click", (e) => {
     if (e.target === modal) modal.style.display = "none";
   });
-
-  // ==================== GOOGLE WALLET API ====================
-  const btnGoogleWallet = document.getElementById("btnGoogleWallet");
-
-  if (btnGoogleWallet) {
-    btnGoogleWallet.addEventListener("click", () => {
-      addToGoogleWallet();
-    });
-  }
-
-  function addToGoogleWallet() {
-    const employeeName = document.getElementById("empleado").value.trim() || "Empleado";
-    const company = document.getElementById("empresa").value.trim() || "Empresa";
-
-    const passObject = {
-      "id": `3388000000023165612.${Date.now()}`,
-      "classId": `3388000000023165612.membership-class`,
-      "state": "active",
-      "barcode": {
-        "type": "QR_CODE",
-        "value": "MEM-" + Date.now()
-      },
-      "textModulesData": [
-        { "header": "Empleado", "body": employeeName },
-        { "header": "Empresa", "body": company }
-      ]
-    };
-
-    alert(`🔄 Preparando pase para Google Wallet...\n\nEmpleado: ${employeeName}\nEmpresa: ${company}`);
-    
-    console.log("Pass Object para Google Wallet:", passObject);
-    
-    // En producción aquí iría la generación del JWT usando tu archivo JSON
-  }
 });
