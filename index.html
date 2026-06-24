@@ -29,7 +29,13 @@
             <div class="form-section-card">
               <div class="field full">
                 <label>Nombre de la Empresa</label>
-                <input type="text" class="input-glass" id="empresa" list="empresasList" placeholder="Escribe o selecciona la empresa" required>
+                <input type="text"
+                       class="input-glass"
+                       id="empresa"
+                       list="empresasList"
+                       placeholder="Escribe o selecciona la empresa"
+                       autocomplete="on"
+                       required>
               </div>
               
               <div class="fields-row">
@@ -126,12 +132,14 @@
   </div>
 </div>
 
+<!-- DATALIST AUTOCOMPLETADO -->
 <datalist id="empresasList">
   <option value="Seguros Monterrey / GMM"></option>
   <option value="Universidad Londres"></option>
   <option value="Alsea"></option>
   <option value="Health Conection / Mabe"></option>
   <option value="Health Conection / Garrido Licona y Asociados S. C."></option>
+  <option value="HSAI Chapultepec"></option>
 </datalist>
 
 <script src="script.js"></script>
